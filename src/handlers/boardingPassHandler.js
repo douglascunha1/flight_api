@@ -56,3 +56,13 @@ export async function deleteBoardingPass(c) {
     return c.json({ error: err.message }, 400);
   }
 }
+
+export async function getBoardingPassDetails(c) {
+  try {    
+    const data = await service.getDetailedBoardingPasses();
+
+    return c.json(data);
+  } catch (err) {
+    return c.json({ error: 'Failed to fetch boarding pass details' }, 500);
+  }
+}

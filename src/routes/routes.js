@@ -27,7 +27,8 @@ import {
   getBoardingPassById,
   createBoardingPass,
   updateBoardingPass,
-  deleteBoardingPass
+  deleteBoardingPass,
+  getBoardingPassDetails
 } from "../handlers/boardingPassHandler.js";
 
 import {
@@ -56,6 +57,7 @@ export const routes = (app) => {
   app.delete('/aircrafts/:id', deleteAircraft);
 
   app.get('/boarding-passes', getBoardingPass);
+  app.get('/boarding-passes/details', getBoardingPassDetails);
   app.get('/boarding-passes/:id', getBoardingPassById);
   app.post('/boarding-passes', createBoardingPass);
   app.put('/boarding-passes/:id', updateBoardingPass);

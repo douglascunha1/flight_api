@@ -25,3 +25,7 @@ export async function update(id, data) {
 export async function remove(id) {
   return repository.remove(id);
 }
+
+export async function getDetailedBoardingPasses() {
+  return repository.findDetailedBoardingPasses();
+}
