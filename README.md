@@ -149,6 +149,8 @@ flight_api/
 - mysql2 (driver MySQL)
 - dotenv (variáveis de ambiente)
 - Docker
+- ESLint (linter)
+- Postman (coleção de testes)
 
 ---
 
