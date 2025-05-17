@@ -31,8 +31,6 @@ import {
 } from "../handlers/boardingPassHandler.js";
 
 import {
-  getUser,
-  getUserById,
   createUser,
   updateUser,
   deleteUser
@@ -63,8 +61,6 @@ export const routes = (app) => {
   app.put('/boarding-passes/:id', updateBoardingPass);
   app.delete('/boarding-passes/:id', deleteBoardingPass);
 
-  app.get('/users', getUser);
-  app.get('/users/:id', getUserById);
   app.post('/users', createUser);
   app.put('/users/:id', updateUser);
   app.delete('/users/:id', deleteUser);
