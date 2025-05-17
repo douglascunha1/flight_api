@@ -1,4 +1,3 @@
-// passengerService.js
 import * as repository from "../repository/flightRepository.js";
 
 export async function findAll() {
