@@ -22,7 +22,15 @@ export const create = async (data) => {
   return repository.create(data);
 };
 
-export const update = async (id, data) => repository.update(id, data);
+export const update = async (id, data) => {
+  const existingUser = await repository.getUserByEmail(data.login_email);
+  
+  if (existingUser && existingUser.id !== id) {
+    throw new Error("User with this email already exists.");
+  }
+
+  return repository.update(id, data);
+};
 
 export const remove = async (id) => {
   const user = await repository.getUserById(id);

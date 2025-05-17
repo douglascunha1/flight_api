@@ -28,18 +28,25 @@ export const createUser = async (c) => {
 };
 
 export const updateUser = async (c) => {
-  const id = Number(c.req.param('id'));
-
+  const user = c.get('user');
+  const targetUserId = Number(c.req.param('id'));
   const data = await c.req.json();
 
-  const currentUser = c.get('user');
+  if (user.type !== 'admin' && user.id !== targetUserId) {
+    return c.json({ error: 'Acesso negado: você só pode alterar seus próprios dados.' }, 403);
+  }
+
+  if (user.type !== 'admin' && user.type !== data.type) {
+    return c.json({ error: 'Acesso negado: você não pode alterar o tipo de usuário.' }, 403);
+  }
 
   try {
-    await service.update(id, data, currentUser);
+    const updatedUser = await service.update(targetUserId, data);
 
-    return c.json({ message: 'Atualizado com sucesso' });
-  } catch {
-    return c.json({ error: 'Acesso negado' }, 403);
+    return c.json({ message: 'Usuário atualizado', data });
+  } 
+  catch (error) {
+    return c.json({ error: error.message }, 409);
   }
 };
 
