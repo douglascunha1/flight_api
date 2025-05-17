@@ -32,12 +32,22 @@ import {
 } from "../handlers/boardingPassHandler.js";
 
 import {
+  getAllUsers,
+  getUserById,
   createUser,
   updateUser,
   deleteUser
 } from "../handlers/userHandler.js";
 
+import { loginHandler } from "../handlers/authHandler.js";
+
+import { onlyAdmin } from "../middleware/roleMiddleware.js";
+
+import { authMiddleware } from "../middleware/authMiddleware.js";
+
 export const routes = (app) => {
+  app.post('/login', loginHandler);
+
   app.get('/passengers', getPassengers);
   app.get('/passengers/:id', getPassengerById);
   app.post('/passengers', createPassenger);
@@ -63,7 +73,9 @@ export const routes = (app) => {
   app.put('/boarding-passes/:id', updateBoardingPass);
   app.delete('/boarding-passes/:id', deleteBoardingPass);
 
-  app.post('/users', createUser);
-  app.put('/users/:id', updateUser);
-  app.delete('/users/:id', deleteUser);
+  app.get('/users', authMiddleware, getAllUsers);
+  app.get('/users/:id', authMiddleware, getUserById);
+  app.post('/users', authMiddleware, onlyAdmin, createUser);
+  app.put('/users/:id', authMiddleware, updateUser);
+  app.delete('/users/:id', authMiddleware, onlyAdmin, deleteUser);
 };

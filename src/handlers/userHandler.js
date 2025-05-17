@@ -1,40 +1,56 @@
 import * as service from '../services/userService.js';
 
-export async function createUser(c) {
+export const getAllUsers = async (c) => {
+  const users = await service.getUsers();
+
+  return c.json(users);
+};
+
+export const getUserById = async (c) => {
+  const id = Number(c.req.param('id'));
+
+  const profile = await service.getUserById(id);
+
+  return c.json(profile);
+};
+
+export const createUser = async (c) => {
+  const data = await c.req.json();
+
   try {
-    const payload = await c.req.json();
-
-    const result = await service.create(payload);
-
-    return c.json(result);
-
-  } catch (err) {
-    return c.json({ error: err.message }, 400);
+    await service.create(data);
   }
-}
+  catch (error) {
+    return c.json({ error:  error.message }, 409);
+  }
 
-export async function updateUser(c) {
+  return c.json({ message: 'Usuário criado' });
+};
+
+export const updateUser = async (c) => {
+  const id = Number(c.req.param('id'));
+
+  const data = await c.req.json();
+
+  const currentUser = c.get('user');
+
   try {
-    const id = c.req.param('id');
+    await service.update(id, data, currentUser);
 
-    const payload = await c.req.json();
-
-    const result = await service.update(id, payload);
-
-    return c.json(result);
-  } catch (err) {
-    return c.json({ error: err.message }, 400);
+    return c.json({ message: 'Atualizado com sucesso' });
+  } catch {
+    return c.json({ error: 'Acesso negado' }, 403);
   }
-}
+};
 
-export async function deleteUser(c) {
-  try {
-    const id = c.req.param('id');
+export const deleteUser = async (c) => {
+  const id = Number(c.req.param('id'));
 
-    const result = await service.remove(id);
+  const deletedUser = await service.remove(id);
 
-    return c.json({ success: true });
-  } catch (err) {
-    return c.json({ error: err.message }, 400);
+  if (!deletedUser) {
+    return c.json({ error: 'Usuário não encontrado' }, 404);
   }
-}
+  
+  return c.json({ message: 'Usuário deletado' });
+};
