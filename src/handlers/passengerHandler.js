@@ -1,4 +1,5 @@
 import * as service from '../services/passengerService.js';
+import { redis } from '../config/db/redis.js';
 
 export async function getPassengers(c) {
     const data = await service.findAll();
@@ -24,6 +25,8 @@ export async function createPassenger(c) {
 
     const result = await service.create(payload);
 
+    await redis.del('passengers:/passengers');
+
     return c.json(result);
 
   } catch (err) {
@@ -38,6 +41,9 @@ export async function updatePassenger(c) {
     const payload = await c.req.json();
 
     const result = await service.update(id, payload);
+    
+    await redis.del('passengers:/passengers');
+    await redis.del(`passenger:/passengers/${id}`);
 
     return c.json(result);
   } catch (err) {
@@ -50,6 +56,9 @@ export async function deletePassenger(c) {
     const id = c.req.param('id');
 
     const result = await service.remove(id);
+
+    await redis.del('passengers:/passengers');
+    await redis.del(`passenger:/passengers/${id}`);
 
     return c.json({ success: true });
   } catch (err) {

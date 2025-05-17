@@ -1,4 +1,5 @@
 import * as service from '../services/flightService.js';
+import { redis } from '../config/db/redis.js';
 
 export async function getFlight(c) {
     const data = await service.findAll();
@@ -23,6 +24,8 @@ export async function createFlight(c) {
     const payload = await c.req.json();
 
     const result = await service.create(payload);
+    
+    await redis.del('flights:/flights');
 
     return c.json(result);
 
@@ -38,6 +41,9 @@ export async function updateFlight(c) {
     const payload = await c.req.json();
 
     const result = await service.update(id, payload);
+    
+    await redis.del('flights:/flights');
+    await redis.del(`flight:/flights/${id}`);
 
     return c.json(result);
   } catch (err) {
@@ -50,6 +56,9 @@ export async function deleteFlight(c) {
     const id = c.req.param('id');
 
     const result = await service.remove(id);
+
+    await redis.del('flights:/flights');
+    await redis.del(`flight:/flights/${id}`);
 
     return c.json({ success: true });
   } catch (err) {

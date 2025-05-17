@@ -1,4 +1,5 @@
 import * as service from '../services/userService.js';
+import { redis } from '../config/db/redis.js';
 
 export const getAllUsers = async (c) => {
   const users = await service.getUsers();
@@ -24,6 +25,8 @@ export const createUser = async (c) => {
     return c.json({ error:  error.message }, 409);
   }
 
+  await redis.del('users:/users');
+
   return c.json({ message: 'Usuário criado' });
 };
 
@@ -43,6 +46,9 @@ export const updateUser = async (c) => {
   try {
     const updatedUser = await service.update(targetUserId, data);
 
+    await redis.del('users:/users');
+    await redis.del(`user:/users/${targetUserId}`);
+
     return c.json({ message: 'Usuário atualizado', data });
   } 
   catch (error) {
@@ -58,6 +64,9 @@ export const deleteUser = async (c) => {
   if (!deletedUser) {
     return c.json({ error: 'Usuário não encontrado' }, 404);
   }
+
+  await redis.del('users:/users');
+  await redis.del(`user:/users/${id}`);
   
   return c.json({ message: 'Usuário deletado' });
 };

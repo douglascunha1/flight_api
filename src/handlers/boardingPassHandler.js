@@ -1,4 +1,5 @@
 import * as service from '../services/boardingPassService.js';
+import redis from '../config/db/redis.js';
 
 export async function getBoardingPass(c) {
     const data = await service.findAll();
@@ -18,11 +19,24 @@ export async function getBoardingPassById(c) {
   }
 }
 
+export async function getBoardingPassDetails(c) {
+  try {    
+    const data = await service.getDetailedBoardingPasses();
+
+    return c.json(data);
+  } catch (err) {
+    return c.json({ error: 'Failed to fetch boarding pass details' }, 500);
+  }
+}
+
 export async function createBoardingPass(c) {
   try {
     const payload = await c.req.json();
 
     const result = await service.create(payload);
+
+    await redis.del('boardingPasses:/boarding-passes');
+    await redis.del('boardingPassesDetails:/boarding-passes/details');
 
     return c.json(result);
 
@@ -39,6 +53,10 @@ export async function updateBoardingPass(c) {
 
     const result = await service.update(id, payload);
 
+    await redis.del('boardingPasses:/boarding-passes');
+    await redis.del('boardingPassesDetails:/boarding-passes/details');
+    await redis.del(`boardingPasses:/boarding-passes/${id}`);
+
     return c.json(result);
   } catch (err) {
     return c.json({ error: err.message }, 400);
@@ -51,18 +69,12 @@ export async function deleteBoardingPass(c) {
 
     const result = await service.remove(id);
 
+    await redis.del('boardingPasses:/boarding-passes');
+    await redis.del('boardingPassesDetails:/boarding-passes/details');
+    await redis.del(`boardingPasses:/boarding-passes/${id}`);
+
     return c.json({ success: true });
   } catch (err) {
     return c.json({ error: err.message }, 400);
-  }
-}
-
-export async function getBoardingPassDetails(c) {
-  try {    
-    const data = await service.getDetailedBoardingPasses();
-
-    return c.json(data);
-  } catch (err) {
-    return c.json({ error: 'Failed to fetch boarding pass details' }, 500);
   }
 }
