@@ -86,6 +86,8 @@ docker compose up -d --build
 ```
 flight_api/
 ├── Dockerfile
+├── docs/
+│   └── Flight API.postman_collection.json
 ├── docker-compose.yml
 ├── .env
 ├── .gitignore
@@ -126,7 +128,6 @@ flight_api/
 │   ├── utils/
 │   ├── app.js
 │   └── index.js
-└── ...
 ```
 
 - **src/config/db/**: configuração e schema do banco de dados
