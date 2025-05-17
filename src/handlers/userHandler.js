@@ -1,5 +1,5 @@
 import * as service from '../services/userService.js';
-import { redis } from '../config/db/redis.js';
+import redis from '../config/db/redis.js';
 
 export const getAllUsers = async (c) => {
   const users = await service.getUsers();

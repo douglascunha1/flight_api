@@ -1,5 +1,5 @@
 import * as service from '../services/flightService.js';
-import { redis } from '../config/db/redis.js';
+import redis from '../config/db/redis.js';
 
 export async function getFlight(c) {
     const data = await service.findAll();
