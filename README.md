@@ -69,6 +69,7 @@ docker compose up -d --build
 
 ### Cartões de Embarque (`/boarding-passes`)
 - `GET /boarding-passes` – Lista todos os cartões de embarque
+- `GET /boarding-passes/details` – Lista todos os cartões de embarque com detalhes
 - `GET /boarding-passes/:id` – Detalha um cartão de embarque específico
 - `POST /boarding-passes` – Cria um novo cartão de embarque
 - `PUT /boarding-passes/:id` – Atualiza um cartão de embarque existente

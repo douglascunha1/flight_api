@@ -361,6 +361,24 @@
 					"response": []
 				},
 				{
+					"name": "Get detailed boarding passes",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/boarding-passes/details",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"boarding-passes",
+								"details"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "Get boarding-passe by ID",
 					"request": {
 						"method": "GET",
