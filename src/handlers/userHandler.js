@@ -1,23 +1,5 @@
 import * as service from '../services/userService.js';
 
-export async function getUser(c) {
-    const data = await service.findAll();
-
-    return c.json(data);
-}
-
-export async function getUserById(c) {
-  try {
-    const id = c.req.param('id');
-
-    const data = await service.findById(id);
-
-    return c.json(data);
-  } catch (err) {
-    return c.json({ error: err.message }, 404);
-  }
-}
-
 export async function createUser(c) {
   try {
     const payload = await c.req.json();
