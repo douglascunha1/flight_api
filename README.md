@@ -25,6 +25,7 @@ O **Flight API** é uma aplicação backend desenvolvida em Node.js utilizando o
 - [Redis](https://redis.io/) (cache e gerenciamento de sessão)
 - [JWT](https://jwt.io/) (autenticação)
 - [dotenv](https://www.npmjs.com/package/dotenv) (gerenciamento de variáveis de ambiente)
+- [hono-rate-limiter](https://github.com/rhinobase/hono-rate-limiter) (rate limiter para proteger endpoints contra abusos e ataques)
 - [Docker](https://www.docker.com/) e [docker-compose](https://docs.docker.com/compose/)
 - [ESLint](https://eslint.org/) (linter)
 - [Postman](https://www.postman.com/) (coleção de testes)
