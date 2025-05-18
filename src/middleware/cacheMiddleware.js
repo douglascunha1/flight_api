@@ -18,7 +18,7 @@ export const cacheMiddleware = (keyPrefix) => async (c, next) => {
 
   c.json = async (data, status = 200, headers) => {
     if (status >= 200 && status < 300) {
-      await redis.set(key, JSON.stringify(data), { EX: 60 });
+      await redis.set(key, JSON.stringify(data), { EX: 300 });
     }
     return originalJson(data, status, headers);
   };
