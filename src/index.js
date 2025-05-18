@@ -6,7 +6,12 @@ import { logger } from 'hono/logger';
 
 const app = new Hono();
 
-app.use(logger());
+app.use(
+  logger((str, c) => {
+    const now = new Date().toISOString();
+    console.log(`[${now}] ${str}`);
+  })
+);
 
 routes(app);
 
