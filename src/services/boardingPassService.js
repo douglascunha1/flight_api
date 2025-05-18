@@ -15,10 +15,20 @@ export async function findById(id) {
 }
 
 export async function create(data) {
-  return repository.create(data);
+  const formattedData = {
+    ...data,
+    issue_time: new Date(data.issue_time)
+  };
+
+  return repository.create(formattedData);
 }
 
 export async function update(id, data) {
+
+  if (data.issue_time) {
+    data.issue_time = new Date(data.issue_time);
+  }
+
   return repository.update(id, data);
 }
 

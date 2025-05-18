@@ -2,17 +2,32 @@
 
 ## Visão Geral
 
-O **Flight API** é uma aplicação de backend desenvolvida em Node.js utilizando o framework [Hono](https://hono.dev/) e a biblioteca [drizzle-orm](https://orm.drizzle.team/) para integração com banco de dados MySQL. A API oferece endpoints para o gerenciamento completo de passageiros, voos, aeronaves, cartões de embarque (boarding passes) e usuários do sistema. É ideal para sistemas de reservas ou operações aeroportuárias.
+O **Flight API** é uma aplicação backend desenvolvida em Node.js utilizando o framework [Hono](https://hono.dev/) e a biblioteca [Drizzle ORM](https://orm.drizzle.team/) para integração com banco de dados PostgreSQL. A API oferece endpoints para o gerenciamento completo de passageiros, voos, aeronaves, cartões de embarque (boarding passes) e usuários do sistema, incluindo autenticação JWT e cache em Redis. É ideal para sistemas de reservas aéreas ou operações aeroportuárias.
 
 ---
 
 ## Funcionalidades
 
-- **Passageiros:** CRUD de passageiros.
-- **Voos:** CRUD de voos.
-- **Aeronaves:** CRUD de aeronaves.
-- **Cartões de Embarque:** CRUD de boarding passes.
-- **Usuários:** Cadastro, atualização e remoção de usuários do sistema.
+- Cadastro, listagem, atualização e remoção de passageiros, voos, aeronaves e cartões de embarque.
+- Gerenciamento de usuários (CRUD).
+- Autenticação JWT.
+- Cache de dados em Redis para maior performance.
+- Documentação e testes com Postman.
+
+---
+
+## Tecnologias e Bibliotecas
+
+- [Node.js](https://nodejs.org/)
+- [Hono](https://hono.dev/) (framework web)
+- [Drizzle ORM](https://orm.drizzle.team/) (ORM para PostgreSQL)
+- [PostgreSQL](https://www.postgresql.org/) (banco de dados relacional)
+- [Redis](https://redis.io/) (cache e gerenciamento de sessão)
+- [JWT](https://jwt.io/) (autenticação)
+- [dotenv](https://www.npmjs.com/package/dotenv) (gerenciamento de variáveis de ambiente)
+- [Docker](https://www.docker.com/) e [docker-compose](https://docs.docker.com/compose/)
+- [ESLint](https://eslint.org/) (linter)
+- [Postman](https://www.postman.com/) (coleção de testes)
 
 ---
 
@@ -21,30 +36,65 @@ O **Flight API** é uma aplicação de backend desenvolvida em Node.js utilizand
 ### Pré-requisitos
 
 - Node.js 20+
-- Banco de dados MySQL
-- [npm](https://www.npmjs.com/)
+- Docker e docker-compose
+- (Opcional) PostgreSQL e Redis instalados localmente (se não usar Docker)
 
-### Configuração do ambiente
+### 1. Clone o repositório
 
-1. Crie um arquivo `.env` na raiz do projeto com a variável `DATABASE_URL` apontando para seu banco MySQL.  
-   Exemplo:
-   ```
-   DATABASE_URL="mysql://usuario:senha@host:porta/nome_do_banco"
-   ```
+```bash
+git clone https://github.com/douglascunha1/flight_api.git
+cd flight_api
+```
 
-   A API estará disponível em `http://localhost:3000`.
+### 2. Instale as dependências
 
-### Docker
+```bash
+npm install
+```
 
-Você pode rodar a aplicação via Docker:
+### 3. Gere as variáveis de ambiente
+
+Execute o script abaixo para gerar a variável `JWT_SECRET` automaticamente em um arquivo `.env` na raiz do projeto.  
+O mesmo arquivo `.env` será usado para armazenar as URLs do PostgreSQL e Redis.
+
+```bash
+sh generate-jwt-secret.sh
+```
+
+Esse script irá:
+
+- Criar um arquivo `.env` se não existir.
+- Gerar e armazenar uma chave segura para `JWT_SECRET`.
+- Você deve incluir também as variáveis do PostgreSQL e Redis no `.env` manualmente, por exemplo:
+
+```
+DATABASE_URL="postgres://usuario:senha@localhost:5432/seu_banco"
+REDIS_URL="redis://localhost:6379"
+POSTGRES_USER=seu_usuario
+POSTGRES_PASSWORD=sua_senha
+POSTGRES_DB=seu_banco
+```
+
+Se estiver usando Docker, as variáveis de ambiente são automaticamente lidas do `.env`.
+
+### 4. Suba os containers (PostgreSQL, Redis, Adminer, API)
 
 ```bash
 docker compose up -d --build
 ```
 
+A aplicação estará disponível em:  
+`http://localhost:3000`
+
+O banco de dados Adminer estará disponível em:  
+`http://localhost:8080`  
+(_Use para inspecionar seu banco PostgreSQL via UI._)
+
 ---
 
 ## Endpoints
+
+A API oferece endpoints REST completos para cada entidade, caso você queira testar manualmente, utilize o [Postman](https://www.postman.com/) ou qualquer outro cliente HTTP. A collection do Postman está disponível na pasta `docs` do repositório.
 
 ### Passageiros (`/passengers`)
 - `GET /passengers` – Lista todos os passageiros
@@ -80,6 +130,9 @@ docker compose up -d --build
 - `PUT /users/:id` – Atualiza um usuário existente
 - `DELETE /users/:id` – Remove um usuário
 
+### Login (`/login`)
+- `POST /login` – Realiza o login de um usuário e retorna um token JWT
+
 ---
 
 ## Estrutura do Projeto
@@ -87,71 +140,26 @@ docker compose up -d --build
 ```
 flight_api/
 ├── Dockerfile
-├── docs/
-│   └── Flight API.postman_collection.json
 ├── docker-compose.yml
 ├── .env
-├── .gitignore
+├── generate-jwt-secret.sh
 ├── README.md
 ├── index.js
-├── package-lock.json
 ├── package.json
-├── .eslintrc.json
-├── drizzle
-├── mysql_demo_flight_db.sql
-├── drizzle.config.js
 ├── src/
 │   ├── config/
 │   │   └── db/
 │   │       ├── index.js
-│   │       └── schema.js
-│   ├── handlers/
-│   │   ├── passengerHandler.js
-│   │   ├── flightHandler.js
-│   │   ├── aircraftHandler.js
-│   │   ├── boardingPassHandler.js
-│   │   └── userHandler.js
-│   ├── repository/
-│   │   ├── passengerRepository.js
-│   │   ├── flightRepository.js
-│   │   ├── aircraftRepository.js
-│   │   ├── boardingPassRepository.js
-│   │   └── userRepository.js
-│   ├── routes/
-│   │   ├── routes.js
-│   ├── services/
-│   │   ├── passengerService.js
-│   │   ├── flightService.js
-│   │   ├── aircraftService.js
-│   │   ├── boardingPassService.js
-│   │   └── userService.js
-│   ├── middleware
-│   ├── utils/
-│   ├── app.js
-│   └── index.js
+│   │       ├── schema.js
+│   │       └── redis.js
+│   ├── handlers/         # Lógica dos endpoints
+│   ├── repository/       # Camada de acesso a dados
+│   ├── routes/           # Definição das rotas
+│   ├── services/         # Lógica de negócio
+│   ├── middleware/       # Middlewares (ex: autenticação, cache)
+│   ├── utils/            # Funções utilitárias
+│   └── app.js
 ```
-
-- **src/config/db/**: configuração e schema do banco de dados
-- **src/handlers/**: lógica dos endpoints
-- **src/repository/**: acesso aos dados no banco (camada de persistência)
-- **src/services/**: lógica de negócio
-- **src/routes/**: definição das rotas da API
-- **src/middleware/**: middlewares para validação e autenticação
-- **src/utils/**: funções utilitárias
-- **index.js**: ponto de entrada da aplicação
-
----
-
-## Tecnologias e Bibliotecas
-
-- Node.js
-- Hono (framework web)
-- drizzle-orm (ORM MySQL)
-- mysql2 (driver MySQL)
-- dotenv (variáveis de ambiente)
-- Docker
-- ESLint (linter)
-- Postman (coleção de testes)
 
 ---
 
