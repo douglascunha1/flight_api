@@ -27,7 +27,7 @@ export async function createFlight(c) {
     
     await redis.del('flights:/flights');
 
-    return c.json(result);
+    return c.json({ message: 'Flight created successfully', data: result[0] }, 201);
 
   } catch (err) {
     return c.json({ error: err.message }, 400);
@@ -45,7 +45,7 @@ export async function updateFlight(c) {
     await redis.del('flights:/flights');
     await redis.del(`flight:/flights/${id}`);
 
-    return c.json(result);
+    return c.json({ message: 'Flight updated successfully', data: result[0] }, 200);
   } catch (err) {
     return c.json({ error: err.message }, 400);
   }
@@ -60,7 +60,7 @@ export async function deleteFlight(c) {
     await redis.del('flights:/flights');
     await redis.del(`flight:/flights/${id}`);
 
-    return c.json({ success: true });
+    return c.json({ success: true, message: 'Flight deleted successfully' });
   } catch (err) {
     return c.json({ error: err.message }, 400);
   }

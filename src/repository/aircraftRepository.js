@@ -10,11 +10,11 @@ export const findById = (id) => {
 };
 
 export const create = (data) => {
-    return db.insert(aircraft).values(data);
+    return db.insert(aircraft).values(data).returning();
 };
 
 export const update = (id, data) => {
-    return db.update(aircraft).set(data).where(eq(aircraft.aircraft_id, Number(id)));
+    return db.update(aircraft).set(data).where(eq(aircraft.aircraft_id, Number(id))).returning();
 };
 
 export const remove = (id) => {

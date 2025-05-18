@@ -2,17 +2,18 @@ version: '3.8'
 
 services:
   db:
-    image: mysql:8.0
-    container_name: mysql
+    image: postgres:17
+    container_name: postgres
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: demo_flight
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
     ports:
-      - "3306:3306"
+      - "5432:5432"
     volumes:
-      - db-data:/var/lib/mysql
-      - ./mysql_demo_flight_db.sql:/docker-entrypoint-initdb.d/init.sql
+      - pg-data:/var/lib/postgresql/data
+      - ./postgresql_demo_flight_db.sql:/docker-entrypoint-initdb.d/init.sql
 
   redis:
     image: redis:alpine
@@ -41,4 +42,4 @@ services:
       - .:/app
 
 volumes:
-  db-data:
+  pg-data:

@@ -1,18 +1,12 @@
-import mysql from 'mysql2/promise';
-import { drizzle } from 'drizzle-orm/mysql2';
-import { sql, eq } from "drizzle-orm";
+import { drizzle } from "drizzle-orm/node-postgres";
+import { Pool } from "pg";
+import { sql, eq } from 'drizzle-orm';
+
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+});
+
+const db = drizzle({ client: pool });
 
 
-const connectToDatabase = async () => {
-  try {
-    const pool = await mysql.createPool(process.env.DATABASE_URL);
-
-    return drizzle(pool);
-  } catch (err) {
-    throw new Error('❌ Não foi possível conectar ao banco de dados.');
-  }
-};
-
-const database = await connectToDatabase();
-
-export { database, sql, eq };
+export { db as database, sql, eq };

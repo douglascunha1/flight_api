@@ -1,68 +1,66 @@
--- SCRIPT MYSQL - demo_flight DATABASE
-
+-------------------------------------------
+-- SCRIPT POSTGRESQL - demo_flight DATABASE
+-------------------------------------------
+-- CREATE DATABASE demo_flight;
 -- Criacao do banco de dados se nao existir
-CREATE DATABASE IF NOT EXISTS demo_flight;
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_database WHERE datname = 'demo_flight') THEN
+        CREATE DATABASE demo_flight;
+    END IF;
+END $$;
 
--- Selecionando o banco de dados
-USE demo_flight;
+-- Conectando ao banco de dados
+\c demo_flight;
 
--- Tabela de usuarios
+-- Tabela de usuarios operadores do sistema
 CREATE TABLE sys_user (
-    id INT AUTO_INCREMENT PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     login_email VARCHAR(150) UNIQUE NOT NULL,
     password VARCHAR(255) NOT NULL,
-    user_type ENUM('admin', 'regular') NOT NULL
+    user_type VARCHAR(10) NOT NULL CHECK (user_type IN ('admin', 'regular'))
 );
 
 -- Tabela de passageiros
 CREATE TABLE passenger (
-    passenger_id INT AUTO_INCREMENT PRIMARY KEY,
-    first_name VARCHAR(50) NOT NULL,
-    last_name VARCHAR(50) NOT NULL,
-    birth_date DATE NOT NULL,
-    passport_number VARCHAR(20) UNIQUE NOT NULL
+    passenger_id SERIAL PRIMARY KEY,
+    first_name VARCHAR(50),
+    last_name VARCHAR(50),
+    birth_date DATE,
+    passport_number VARCHAR(20) UNIQUE
 );
 
 -- Tabela de aeronaves
 CREATE TABLE aircraft (
-    aircraft_id INT AUTO_INCREMENT PRIMARY KEY,
-    model VARCHAR(50) NOT NULL,
-    manufacturer VARCHAR(50) NOT NULL,
-    capacity INT NOT NULL
+    aircraft_id SERIAL PRIMARY KEY,
+    model VARCHAR(100),
+    manufacturer VARCHAR(100),
+    capacity INT
 );
 
 -- Tabela de voos
 CREATE TABLE flight (
-    flight_id INT AUTO_INCREMENT PRIMARY KEY,
-    flight_number VARCHAR(10) UNIQUE NOT NULL,
-    departure_airport VARCHAR(5) NOT NULL,
-    arrival_airport VARCHAR(5) NOT NULL,
-    departure_time DATETIME NOT NULL,
-    arrival_time DATETIME NOT NULL,
-    aircraft_id INT NOT NULL,
-    FOREIGN KEY (aircraft_id) REFERENCES aircraft(aircraft_id)
-        ON DELETE CASCADE
-        ON UPDATE CASCADE
+    flight_id SERIAL PRIMARY KEY,
+    flight_number VARCHAR(10),
+    departure_airport VARCHAR(10),
+    arrival_airport VARCHAR(10),
+    departure_time TIMESTAMP,
+    arrival_time TIMESTAMP,
+    aircraft_id INT REFERENCES aircraft(aircraft_id)
 );
 
 -- Tabela de cartoes de embarque
 CREATE TABLE boarding_pass (
-    boarding_pass_id INT AUTO_INCREMENT PRIMARY KEY,
-    seat_number VARCHAR(5) NOT NULL,
-    passenger_id INT NOT NULL,
-    flight_id INT NOT NULL,
-    issue_time DATETIME NOT NULL,
-    FOREIGN KEY (passenger_id) REFERENCES passenger(passenger_id)
-        ON DELETE CASCADE
-        ON UPDATE CASCADE,
-    FOREIGN KEY (flight_id) REFERENCES flight(flight_id)
-        ON DELETE CASCADE
-        ON UPDATE CASCADE
+    boarding_pass_id SERIAL PRIMARY KEY,
+    seat_number VARCHAR(5),
+    passenger_id INT REFERENCES passenger(passenger_id),
+    flight_id INT REFERENCES flight(flight_id),
+    issue_time TIMESTAMP
 );
-
+-----------------------
 -- Populando as tabelas
-
+-----------------------
 -- Tabela de usuarios 4 linhas
 INSERT INTO sys_user (name, login_email, password, user_type) VALUES ('Alice Johnson', 'a@a.com', '12345', 'admin');
 INSERT INTO sys_user (name, login_email, password, user_type) VALUES ('Bob Smith', 'b@b.com', '12345', 'admin');
@@ -20622,5 +20620,7 @@ INSERT INTO boarding_pass (seat_number, passenger_id, flight_id, issue_time) VAL
 INSERT INTO boarding_pass (seat_number, passenger_id, flight_id, issue_time) VALUES ('23B', 5028, 418, '2024-11-13 00:00:00');
 INSERT INTO boarding_pass (seat_number, passenger_id, flight_id, issue_time) VALUES ('6D', 5081, 440, '2024-08-19 00:00:00');
 INSERT INTO boarding_pass (seat_number, passenger_id, flight_id, issue_time) VALUES ('21E', 4856, 262, '2024-10-14 00:00:00');
+-----------------------------------------------------------------------------
 -- Mensagem
 SELECT 'Banco de dados demo_flight criado e populado com sucesso!' AS status;
+-----------------------------------------------------------------------------

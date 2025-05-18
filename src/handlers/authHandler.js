@@ -6,7 +6,7 @@ export const loginHandler = async (c) => {
 
   const user = await service.login(email, password);
 
-  if (!user) return c.json({ error: 'Credenciais inválidas' }, 401);
+  if (!user) return c.json({ error: 'Credentials are invalid' }, 401);
 
   const token = await generateToken(user);
 

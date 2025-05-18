@@ -19,11 +19,11 @@ export const getUserById = async (id) => {
 export const getAllUsers = () => db.select().from(sys_user);
 
 export const create = (data) => {
-    return db.insert(sys_user).values(data);
+    return db.insert(sys_user).values(data).returning();
 };
 
 export const update = (id, data) => {
-    return db.update(sys_user).set(data).where(eq(sys_user.id, Number(id)));
+    return db.update(sys_user).set(data).where(eq(sys_user.id, Number(id))).returning();
 };
 
 export const remove = async (id) => {

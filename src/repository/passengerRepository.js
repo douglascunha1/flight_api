@@ -9,12 +9,16 @@ export const findById = (id) => {
     return db.select().from(passenger).where(eq(passenger.passenger_id, Number(id)));
 };
 
+export const findByPassportNumber = (passportNumber) => {
+    return db.select().from(passenger).where(eq(passenger.passport_number, passportNumber));
+}
+
 export const create = (data) => {
-    return db.insert(passenger).values(data);
+    return db.insert(passenger).values(data).returning();
 };
 
 export const update = (id, data) => {
-    return db.update(passenger).set(data).where(eq(passenger.passenger_id, Number(id)));
+    return db.update(passenger).set(data).where(eq(passenger.passenger_id, Number(id))).returning();
 };
 
 export const remove = (id) => {

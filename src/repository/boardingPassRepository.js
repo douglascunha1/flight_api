@@ -36,11 +36,11 @@ export const findDetailedBoardingPasses = () => {
 }
 
 export const create = (data) => {
-    return db.insert(boarding_pass).values(data);
+    return db.insert(boarding_pass).values(data).returning();
 };
 
 export const update = (id, data) => {
-    return db.update(boarding_pass).set(data).where(eq(boarding_pass.boarding_pass_id, Number(id)));
+    return db.update(boarding_pass).set(data).where(eq(boarding_pass.boarding_pass_id, Number(id))).returning();
 };
 
 export const remove = (id) => {
