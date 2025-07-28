@@ -48,17 +48,17 @@ import { rateLimiter } from "hono-rate-limiter";
 export const routes = (app) => {
   app.post('/login', loginHandler);
 
-  app.use(
-    '*',
-    rateLimiter({
-      windowMs: 60 * 60 * 1000,
-      limit: 100,
-      standardHeaders: "draft-6",
-      keyGenerator: (c) => {
-        return c.req.raw?.socket?.remoteAddress || 'unknown';
-      },
-    })
-  );
+  // app.use(
+  //   '*',
+  //   rateLimiter({
+  //     windowMs: 60 * 60 * 1000,
+  //     limit: 100,
+  //     standardHeaders: "draft-6",
+  //     keyGenerator: (c) => {
+  //       return c.req.raw?.socket?.remoteAddress || 'unknown';
+  //     },
+  //   })
+  // );
 
   app.get('/passengers', cacheMiddleware('passengers'), getPassengers);
   app.get('/passengers/:id', cacheMiddleware('passenger'), getPassengerById);
